@@ -1,8 +1,11 @@
 const routes = require('express').Router();
 const fs = require('fs');
+const generateToken = require('../utilities/generateToken');
 
 routes.get('/talker', async (_req, res) => {
   const talkers = await JSON.parse(fs.readFileSync('talker.json'));
+  const token = generateToken();
+  console.log(token);
   if (talkers.length === 0) {
     return res.status(200).send([]);
   }
@@ -15,6 +18,11 @@ routes.get('/talker/:id', async (req, res) => {
   const findTalker = talkers.find((talker) => talker.id === parseInt(id, 10));
   if (!findTalker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   return res.status(200).json(findTalker);
+});
+
+routes.post('/login', (_req, res) => {
+  const token = generateToken();
+  return res.status(200).json({ token: `${token}` });
 });
 
 module.exports = routes;
