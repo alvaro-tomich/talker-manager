@@ -1,6 +1,7 @@
 const routes = require('express').Router();
 const fs = require('fs');
 const generateToken = require('../utilities/generateToken');
+const validateEmail = require('../middlewares/validateEmail');
 
 routes.get('/talker', async (_req, res) => {
   const talkers = await JSON.parse(fs.readFileSync('talker.json'));
@@ -20,7 +21,7 @@ routes.get('/talker/:id', async (req, res) => {
   return res.status(200).json(findTalker);
 });
 
-routes.post('/login', (_req, res) => {
+routes.post('/login', validateEmail, (_req, res) => {
   const token = generateToken();
   return res.status(200).json({ token: `${token}` });
 });
