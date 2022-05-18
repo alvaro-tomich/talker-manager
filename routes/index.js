@@ -46,6 +46,14 @@ routes.put('/talker/:id',
   res.status(200).json({ id: parseInt(id, 10), name, age, talk });
 });
 
+routes.delete('/talker/:id', validate.token, async (req, res) => {
+  const { id } = req.params;
+  const talkers = await getTalkers();
+  const removeTalker = talkers.filter((talker) => talker.id !== parseInt(id, 10));
+  fs.writeFileSync('talker.json', JSON.stringify(removeTalker), 'utf8');
+  res.status(204).end();
+});
+
 routes.post('/login', validateEmail, (_req, res) => {
   const token = generateToken();
   return res.status(200).json({ token: `${token}` });
