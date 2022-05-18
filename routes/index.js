@@ -22,8 +22,18 @@ routes.post('/talker',
   const talkersId = talkers.map((talker) => talker.id);
   const newTalkerId = Math.max(...talkersId) + 1;
   const talker = { id: newTalkerId, name, age, talk };
-  fs.writeFileSync('talker.json', JSON.stringify([talker]), 'utf-8');
+  fs.writeFileSync('talker.json', JSON.stringify([...talkers, talker]), 'utf-8');
   return res.status(201).json(talker);
+});
+
+routes.get('/talker/search', validate.token, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await getTalkers();
+
+  const filteredTalkers = talkers
+  .filter((talker) => talker.name.toLocaleLowerCase().includes(q.toLocaleLowerCase()));
+
+  res.status(200).json(filteredTalkers);
 });
 
 routes.get('/talker/:id', async (req, res) => {
