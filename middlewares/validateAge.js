@@ -2,6 +2,7 @@ module.exports = (req, res, next) => {
     const { age } = req.body;
 
     if (!age) { 
+        console.log('git hub ta on?');
         return res.status(400).json({ message: 'O campo "age" é obrigatório' });
     }
 
